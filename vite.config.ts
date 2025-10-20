@@ -3,6 +3,7 @@ import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import svgLoader from 'vite-svg-loader'
+import { resolve } from 'path'
 
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory
@@ -57,21 +58,25 @@ export default defineConfig(({ mode }) => {
     
     // Plugins
     plugins: [
-      svgLoader(),
       vue({
-        script: {
-          defineModel: true,
-          propsDestructure: true
+        template: {
+          compilerOptions: {
+            isCustomElement: tag => tag.startsWith('ion-')
+          }
         }
       }),
-      vueJsx(),
+      vueJsx({
+        // Enable TypeScript in JSX
+        include: [/\.tsx$/, /\.vue$/, /\.vue\?vue/]
+      }),
+      svgLoader()
     ],
     
     // Resolve configuration
     resolve: {
       alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-        '~': fileURLToPath(new URL('./', import.meta.url))
+        '@': resolve(__dirname, 'src'),
+        'vue': 'vue/dist/vue.esm-bundler.js'
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },

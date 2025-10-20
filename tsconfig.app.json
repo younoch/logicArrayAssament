@@ -31,7 +31,12 @@
       "@/*": ["./src/*"]
     },
     "types": ["vite/client", "node", "@vue/runtime-dom"],
-    "jsxImportSource": "vue"
+    "jsxImportSource": "vue",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true
   },
   "references": [
     {

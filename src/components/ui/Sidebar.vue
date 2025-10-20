@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// No need to import defineProps/defineEmits in <script setup>
 import { ref } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import { navGroups, HomeIcon, OfferIcon, PackageIcon, PaymentIcon, ShareIcon, ProfileIcon, ReportIcon, BellIcon } from '@/config/navigation';
@@ -19,16 +20,20 @@ const getIconComponent = (iconName: string) => {
   return iconMap[iconName as keyof typeof iconMap];
 };
 
-const props = defineProps({
-  isMobileMenuOpen: {
-    type: Boolean,
-    default: false
-  }
+interface Props {
+  isMobileMenuOpen: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isMobileMenuOpen: false
 });
 
-const emit = defineEmits(['toggleMobileMenu']);
+const emit = defineEmits<{
+  (e: 'toggleMobileMenu'): void;
+}>();
+
 const { theme, setTheme } = useTheme();
-const isCollapsed = ref(false);
+const isCollapsed = ref<boolean>(false);
 
 const handleMobileMenuToggle = () => {
   emit('toggleMobileMenu');
@@ -177,33 +182,31 @@ const groupTitles: { [key: string]: string } = {
 
 .fade-leave-active {
   transition: opacity 0.15s ease-in, transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  position: absolute;
-  width: 100%;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: translateX(-5px);
+  transform: translateX(-100%);
 }
 
-/* Smooth hover effects */
-button {
-  transition: background-color 0.15s ease, transform 0.15s ease;
+/* Slide transition for mobile menu overlay */
+.slide-enter-active {
+  transition: opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button:active {
-  transform: scale(0.95);
+.slide-leave-active {
+  transition: opacity 0.2s ease-in, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Menu item transitions */
-.menu-item {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, opacity;
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
 }
 
 /* Scrollbar styling */
-::-webkit-scrollbar {
+.sidebar-transition::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
